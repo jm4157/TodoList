@@ -9,11 +9,18 @@ export default function TodoList(){
 
     if (taskText) {
       const newTasks = [...tasks, taskText];
+      
       setTasks(newTasks);
       addField.value = null
-
-      console.log(tasks);
     }
+  }
+
+  function handleRemove(index){
+    const newTasksHead = tasks.slice(0, index);
+    const newTasksTail = tasks.slice(index + 1, tasks.length);
+    const newTasks = [...newTasksHead, ...newTasksTail];
+
+    setTasks(newTasks);
   }
 
   return (
@@ -21,10 +28,9 @@ export default function TodoList(){
       <div className="task-adder">
         <TaskAdder onSubmit={handleTaskAdd} />
       </div>
+      <br />
       <div className="task-tracker">
-        <ol>
-          {/*TODO*/}
-        </ol>
+        <TaskTracker tasks={tasks} onRemove={handleRemove}/>
       </div>
     </div>
   )
@@ -36,8 +42,31 @@ function TaskAdder({onSubmit}){
     <>
       <div className="label"> Enter Task: </div>
       <input type="text" id="addField" ></input>
-      <br></br>
+      <br />
       <button onClick={onSubmit}>Add</button>
+    </>
+  )
+}
+
+
+function TaskTracker({tasks, onRemove}){
+  const taskButtons = tasks.map((taskText, index) => {
+    return (
+      <li key={index}>
+        <>
+          <div className="task">{taskText}</div>
+          <button className="remove" onClick={ () => onRemove(index)}>Remove</button>
+        </>
+      </li>
+    );
+  });
+
+  return (
+    <>
+      <div className="label"> Todo List </div>
+      <ol>
+        {taskButtons}
+      </ol>
     </>
   )
 }
